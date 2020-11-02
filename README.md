@@ -10,6 +10,7 @@ _Wednesday, 9 December 2020_
    * [2.3: Native Imageの依存ライブラリー](#23-Native-Imageの依存ライブラリー)
 
 * **[Exercise 3: High-performance JIT コンパイラー](#Exercise-3-High-performance-JIT-コンパイラー)**
+* **[Exercise 4: Native Image](#Exercise-4-Native-Image)**
 <br/>
 <br/>
 
@@ -256,7 +257,12 @@ public class TopTen {
   >javac TopTen.java
   >```
 
-(7)GraalVMのJITコンパイラーによりコンパイルされたJavaクラスを実行し、実行タイムを測ります。引数にはlarge.txtを指定します。
+(7)GraalVMのJITコンパイラーはJavaで書かれています。以下の最適化によりJITコンパイラーの実行速度が従来C++で書かれていたコンパイラーよりも速くなります。  
+* Partial Escape Analysis  
+* In-lining  
+* Path Duplication
+
+以下のJavaコマンドでコンパイルされたJavaクラスを実行し、実行タイムを測ります。引数にはlarge.txtを指定します。
 
   >```sh
   >time java TopTen large.txt
@@ -276,7 +282,180 @@ vel = 300000
 a = 287500
 sit = 282500
 
-real    0m34.884s
-user    0m35.828s
-sys     0m3.625s
+real    0m32.699s
+user    0m34.078s
+sys     0m3.406s
+```  
+(8)従来のJITコンパイラーとの比較のため、以下のJavaコマンドでフラッグを立てます：-XX:-UseJVMCICompile。JVMCIはGraalVMとJVMのあいだのインタフェースになります。
+
+  >```sh
+  >time java -XX:-UseJVMCICompiler TopTen large.txt
+  >```
+
+実行結果と実行時間を確認します。
+
 ```
+sed = 502500
+ut = 392500
+in = 377500
+et = 352500
+id = 317500
+eu = 317500
+eget = 302500
+vel = 300000
+a = 287500
+sit = 282500
+
+real    0m48.901s
+user    0m49.219s
+sys     0m2.172s
+
+```  
+以上の結果により、GraalVMのJITコンパイラーによる実行時間は従来のHotSpotコンパイラーに比べて約３０％向上しました。  
+<br/>
+<br/>
+# Exercise 4: Native Image
+この演習の中に、GraalVMの中のAhead-of-Time(AOT)機能を利用して軽量で高速起動のNaitve Imageを作成します。  
+
+JITコンパイラーはLong-runningや高いピーク時スループットが要求されるアプリに強味を持つ一方、スタートアップ時間を要することと、比較的に多くなメモリーを消費します。例えば、ファイルサイズの小さい（１KB)ファイルに対してTopTenクラスを実行した場合、起動時間と消費メモリーを測定してみます。　　
+
+(1)graalvm-ten-thingsディレクトリーに移動します。
+
+  >```sh
+  >cd graalvm-ten-things
+  >```
+
+(2)以下のコマンドを実行し、small.txtファイルを作成します。この作業は時間がかかります。
+
+  >```sh
+  >make small.txt
+  >```
+(3)small.txtファイルが作成されたことをlsコマンドで確認します。サイズが1KBであることを確認してください。
+
+![Download Picture 10](images/GraalVMinstall10.JPG)
+
+(4)以下のコマンドを実行し、small.txtの単語を集計するプログラムTopTenを実行します。
+
+  >```sh
+  >time -v java TopTen small.txt
+  >```
+出力結果を確認し、実行時間とメモリーを確認します。
+```
+sed = 6
+sit = 6
+amet = 6
+mauris = 3
+volutpat = 3
+vitae = 3
+dolor = 3
+libero = 3
+tempor = 2
+suscipit = 2
+        Command being timed: "java TopTen small.txt"
+        User time (seconds): 0.71
+        System time (seconds): 0.39
+        Percent of CPU this job got: 135%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.82
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 53976
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 15495
+        Voluntary context switches: 0
+        Involuntary context switches: 0
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 0
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+```  
+
+(5)GraalVMが提供しているツールを使用してNative Imageを作成します。
+
+  >```sh
+  >native-image --no-server --no-fallback TopTen
+  >```
+出力結果を確認します。
+```
+linuser@JUNSUZU-JP:~/handson/graalvm-ten-things$ native-image --no-server --no-fallback TopTen
+[topten:166]    classlist:   5,361.17 ms,  1.13 GB
+[topten:166]        (cap):  15,043.95 ms,  1.58 GB
+[topten:166]        setup:  21,198.24 ms,  1.58 GB
+[topten:166]     (clinit):     376.17 ms,  1.76 GB
+[topten:166]   (typeflow):   9,617.27 ms,  1.76 GB
+[topten:166]    (objects):   7,946.82 ms,  1.76 GB
+[topten:166]   (features):     892.17 ms,  1.76 GB
+[topten:166]     analysis:  20,176.83 ms,  1.76 GB
+[topten:166]     universe:     752.08 ms,  1.76 GB
+[topten:166]      (parse):   1,989.35 ms,  1.76 GB
+[topten:166]     (inline):   2,549.77 ms,  1.76 GB
+[topten:166]    (compile):  32,064.48 ms,  2.89 GB
+[topten:166]      compile:  38,520.67 ms,  2.89 GB
+[topten:166]        image:   2,367.76 ms,  2.89 GB
+[topten:166]        write:   1,849.13 ms,  2.89 GB
+[topten:166]      [total]:  90,988.07 ms,  2.89 GB
+```  
+この実行により、軽量で実行ファイルtoptenが作成ました。
+
+![Download Picture 11](images/GraalVMinstall11.JPG)
+
+以下のコマンドでtoptenのサイズを確認できます。
+
+  >```sh
+  >du -h topten
+  >```
+
+(6)以下のコマンドを実行し、small.txtの単語を集計するプログラムTopTenを実行します。
+
+  >```sh
+  >/usr/bin/time -v ./topten small.txt
+  >```
+出力結果を確認し、実行時間とメモリーを確認します。
+```
+sed = 6
+sit = 6
+amet = 6
+mauris = 3
+volutpat = 3
+vitae = 3
+dolor = 3
+libero = 3
+tempor = 2
+suscipit = 2
+        Command being timed: "./topten small.txt"
+        User time (seconds): 0.01
+        System time (seconds): 0.23
+        Percent of CPU this job got: 70%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.35
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 4968
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 1324
+        Voluntary context switches: 0
+        Involuntary context switches: 0
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 0
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+```  
+この結果は上記(4)と比較して、実行時間とメモリーはそれぞれ以下のようになります。
+|  |JIT実行  |AOT実行  |
+|---|---|---|
+|実行時間  |0.71秒  |0.01秒  |
+|メモリー  |53976kb  |4968kb  |
+
+
