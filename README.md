@@ -1,4 +1,4 @@
-# GraalVM ハンズオン　ワークショップ
+# GraalVM ハンズオン　Basic編
 _Wednesday, 9 December 2020_
 
 内容:
@@ -7,10 +7,11 @@ _Wednesday, 9 December 2020_
 * **[Exercise 2: GraalVM Enterpriseのインストール](#Exercise-2-GraalVM-Enterprise-Editionのインストール)**
    * [2.1: GraalVM EE20.1.0のCoreパッケージ](#21-GraalVM-EE2010のCoreパッケージ)
    * [2.2: Native Image, LLVM-toolchain, R言語コンポーネント](#22-Native-Image-LLVM-toolchain-R言語コンポーネント)
-   * [2.3: R言語のコンフィグ](#23-R言語のコンフィグ)
-   * [2.4: Native Imageの依存ライブラリー](#24-Native-Imageの依存ライブラリー)
+   * [2.3: Native Imageの依存ライブラリー](#23-Native-Imageの依存ライブラリー)
 
-
+* **[Exercise 3: High-performance JIT コンパイラー](#Exercise-3-High-performance-JIT-コンパイラー)**
+<br/>
+<br/>
 
 # Exercise 1: 前提環境／事前準備
 
@@ -23,6 +24,7 @@ _Wednesday, 9 December 2020_
   * GitとCurlを事前にインストールしておいてください。
   * Githubリポジトリーからダウンロードすることがあるので、インターネットに繋がる状態が必要です。
   * 
+<br/>
 
 # Exercise 2: GraalVM Enterprise Editionのインストール
 
@@ -120,6 +122,7 @@ zshの場合
   >Java(TM) SE Runtime Environment (build 1.8.0_251-b08)
   >Java HotSpot(TM) 64-Bit Server VM GraalVM EE 20.1.0 (build 25.251-b08-jvmci-20.1-b02, mixed mode)
   >```
+<br/>
 
 # 2.2: Native Image, LLVM-toolchain, R言語コンポーネント
 
@@ -145,7 +148,6 @@ zshの場合
 ![Download Picture 7](images/GraalVMinstall07.JPG)
 
 
-# 2.3: R言語のコンフィグ
 
 インストール完了後、以下のR言語ソースのコンフィグ作業も実施してください。
   >```sh
@@ -166,7 +168,9 @@ zshの場合
     Creating personal library directory: /home/mluther/R/x86_64-pc-linux-gnu-library/fastr-20.1.0-3.6
     DONE
 
-# 2.4: Native Imageの依存ライブラリー
+<br/>
+
+# 2.3: Native Imageの依存ライブラリー
 
 Native Imageの実行は、glibc-devel, zlib-devel, gccの三つのライブラリーが必要です。下記コマンドでインストールしてください。
   >```sh
@@ -177,5 +181,102 @@ Native Imageの実行は、glibc-devel, zlib-devel, gccの三つのライブラ�
 1.	GraalVM EE20.1.0のCoreパッケージをインストールし、クラスパスを設定しました。
 2.	Native Image, LLVM-toolchain, R言語の三つのコンポーネントをインストールしました。
 3.	Rのコンフィグを実施しました。
-4. Native Imageに必要なライブラリーをインストールしました
+4. Native Imageに必要なライブラリーをインストールしました.  
+<br/>
 
+# Exercise 3: High-performance JIT コンパイラー
+
+以下の演習は「Top 10 Things To Do With GraalVM」 の内容を使用します。  
+https://medium.com/graalvm/graalvm-ten-things-12d9111f307d
+
+(1)上記内容を使用するため、Githubよりソースをダウンロードします。以下のコマンドを実行します。
+
+  >```sh
+  >git clone https://github.com/marthenlt/native-image-workshop.git
+  >```
+
+(2)ダウンロードしたディレクトリーに移動します。
+
+  >```sh
+  >cd graalvm-ten-things
+  >```
+
+(3)以下のコマンドを実行し、large.txtファイルを作成します。この作業は時間がかかります。
+
+  >```sh
+  >make large.txt
+  >```
+
+(4)large.txtファイルが作成されたことをlsコマンドで確認します。サイズが150MBであることを確認してください。
+
+![Download Picture 9](images/GraalVMinstall09.JPG)
+
+(5)TopTen.javaはlarge.txtの中から単語を集計し、上位トップテンの単語一覧を出力するJavaプログラムです。このプログラムはStream Java APIを使用し、すべての単語をソート、カウントします。 
+
+以下はプログラムの内容です。
+```java
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class TopTen {
+
+    public static void main(String[] args) {
+        Arrays.stream(args)
+                .flatMap(TopTen::fileLines)
+                .flatMap(line -> Arrays.stream(line.split("\\b")))
+                .map(word -> word.replaceAll("[^a-zA-Z]", ""))
+                .filter(word -> word.length() > 0)
+                .map(word -> word.toLowerCase())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .sorted((a, b) -> -a.getValue().compareTo(b.getValue()))
+                .limit(10)
+                .forEach(e -> System.out.format("%s = %d%n", e.getKey(), e.getValue()));
+    }
+
+    private static Stream<String> fileLines(String path) {
+        try {
+            return Files.lines(Paths.get(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+}
+```
+
+(6)TopTen.javaをコンパイラーします。デフォルトではGraalVMのJavaコンパイラーが有効で、使用されます。
+
+  >```sh
+  >javac TopTen.java
+  >```
+
+(7)GraalVMのJITコンパイラーによりコンパイルされたJavaクラスを実行し、実行タイムを測ります。引数にはlarge.txtを指定します。
+
+  >```sh
+  >time java TopTen large.txt
+  >```
+
+実行結果と実行時間を確認します。
+
+```
+sed = 502500
+ut = 392500
+in = 377500
+et = 352500
+id = 317500
+eu = 317500
+eget = 302500
+vel = 300000
+a = 287500
+sit = 282500
+
+real    0m34.884s
+user    0m35.828s
+sys     0m3.625s
+```
