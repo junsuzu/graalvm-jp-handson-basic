@@ -3,18 +3,19 @@ _Wednesday, 9 December 2020_
 
 内容:
 
-* **[Exercise 1: 前提環境／事前準備](#exercise-1-前提環境事前準備)**
-* **[Exercise 2: GraalVM Enterpriseのインストール](#Exercise-2-GraalVM-Enterprise-Editionのインストール)**
+* **[演習 1: 前提環境／事前準備](#演習-1-前提環境事前準備)**
+* **[演習 2: GraalVM Enterpriseのインストール](#演習-2-GraalVM-Enterprise-Editionのインストール)**
    * [2.1: GraalVM EE20.1.0のCoreパッケージ](#21-GraalVM-EE2010のCoreパッケージ)
    * [2.2: Native Image, LLVM-toolchain, R言語コンポーネント](#22-Native-Image-LLVM-toolchain-R言語コンポーネント)
    * [2.3: Native Imageの依存ライブラリー](#23-Native-Imageの依存ライブラリー)
 
-* **[Exercise 3: High-performance JIT コンパイラー](#Exercise-3-High-performance-JIT-コンパイラー)**
-* **[Exercise 4: Native Image](#Exercise-4-Native-Image)**
+* **[演習 3: High-performance JIT コンパイラー](#演習-3-High-performance-JIT-コンパイラー)**
+* **[演習 4: Native Image](#演習-4-Native-Image)**
+* **[演習 5: Polyglot](#演習-5-Polyglot)**
 <br/>
 <br/>
 
-# Exercise 1: 前提環境／事前準備
+# 演習 1: 前提環境／事前準備
 
 本ワークショップを実施するための前提環境および事前準備作業を以下に記述します。Workshop当日は基本的に参加者に事前準備なされた環境のもとでハンズオン演習を実施して頂きます。
 
@@ -27,7 +28,7 @@ _Wednesday, 9 December 2020_
   * 
 <br/>
 
-# Exercise 2: GraalVM Enterprise Editionのインストール
+# 演習 2: GraalVM Enterprise Editionのインストール
 
 以下はGraalVM Enterprise Edition 20.1.0 for JDK 8をインストール手順となります。
 
@@ -185,7 +186,7 @@ Native Imageの実行は、glibc-devel, zlib-devel, gccの三つのライブラ�
 4. Native Imageに必要なライブラリーをインストールしました.  
 <br/>
 
-# Exercise 3: High-performance JIT コンパイラー
+# 演習 3: High-performance JIT コンパイラー
 
 以下の演習は「Top 10 Things To Do With GraalVM」 の内容を使用します。  
 https://medium.com/graalvm/graalvm-ten-things-12d9111f307d
@@ -284,7 +285,7 @@ sit = 282500
 
 real    0m32.699s
 user    0m34.078s
-sys     0m3.406s
+sys     0m3.406s  
 ```  
 (8)従来のJITコンパイラーとの比較のため、以下のJavaコマンドでフラッグを立てます：-XX:-UseJVMCICompile。JVMCIはGraalVMとJVMのあいだのインタフェースになります。
 
@@ -314,7 +315,7 @@ sys     0m2.172s
 以上の結果により、GraalVMのJITコンパイラーによる実行時間は従来のHotSpotコンパイラーに比べて約３０％向上しました。  
 <br/>
 <br/>
-# Exercise 4: Native Image
+# 演習 4: Native Image
 この演習の中に、GraalVMの中のAhead-of-Time(AOT)機能を利用して軽量で高速起動のNaitve Imageを作成します。  
 
 JITコンパイラーはLong-runningや高いピーク時スループットが要求されるアプリに強味を持つ一方、スタートアップ時間を要することと、比較的に多くなメモリーを消費します。例えば、ファイルサイズの小さい（１KB)ファイルに対してTopTenクラスを実行した場合、起動時間と消費メモリーを測定してみます。　　
@@ -457,5 +458,59 @@ suscipit = 2
 |---|---|---|
 |実行時間  |0.71秒  |0.01秒  |
 |メモリー  |53976kb  |4968kb  |
+  
+<br/>
+<br/>
 
+# 演習 5: Polyglot
+
+GraalVMはTruffleというフレームワークを使用してJava以外のプログラミング言語をGraalVMのJITコンパイラー上で動かすことができます。以下の演習では、一本のJavaScriptプログラム（polyglot.js)の中にGraalVMのpolyglot APIを使用し、JavaとRの両方を呼び出します。大きい整数の扱いがより効率的であるJavaのBigIntegerクラスを利用しながら、描画が得意とするRで3Dグラフを作成します。  
+
+(1)まずNode.jsで利用できるWebアプリケーションフレームワークExpressをインストールします。以下のコマンドを実行します。
+
+  >```sh
+  >$GRAALVM_HOME/bin/npm install express
+  >```
+
+
+(2)polyglot.jsの中身を確認します。
+```js
+const express = require('express')
+const app = express()
+
+const BigInteger = Java.type('java.math.BigInteger')
+
+app.get('/', function (req, res) {
+  var text = 'Hello World from Graal.js!<br> '
+
+  // Using Java standard library classes
+  text += BigInteger.valueOf(10).pow(100)
+          .add(BigInteger.valueOf(43)).toString() + '<br>'
+
+  // Using R interoperability to create graphs
+  text += Polyglot.eval('R',
+    `svg();
+     require(lattice);
+     x <- 1:100
+     y <- sin(x/10)
+     z <- cos(x^1.3/(runif(1)*5+10))
+     print(cloud(x~y*z, main="cloud plot"))
+     grDevices:::svg.off()
+    `);
+
+  res.send(text)
+})
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+})
+```
+
+(3)polyglot.jsを実行します。
+>```sh
+>$GRAALVM_HOME/bin/node --jvm --polyglot polyglot.js
+>```
+
+実行結果を確認するため、http://localhost:3000/ をブラウザでオープンして確認します。
+![Download Picture 12](images/GraalVMinstall12.JPG)
 
