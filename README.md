@@ -1,4 +1,4 @@
-# GraalVM ハンズオン　Basic編
+# Oracle GraalVM Enterprise Basic ハンズオン演習
 _Wednesday, 9 December 2020_
 
 内容:
