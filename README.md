@@ -1,7 +1,16 @@
 # Oracle GraalVM Enterprise ハンズオン演習 (Basic編)
 _Wednesday, 9 December 2020_
 
-内容:
+## ＜目的と対象＞：
+このハンズオン演習は、次世代Polyglot(多言語対応）環境であるOracle GraalVM Enterprise版の導入、操作手順を演習形式で学ぶためのガイドです。この演習を通じて以下の項目をマスターすることを目的としています。  
+* GraalVMをPC環境への導入
+* 新しいJITコンパイラー上でJavaクラスの実行
+* 新しいAOTコンパイラー上でNative Imageの生成と実行
+* Polyglot（多言語）プログラミングと実行  
+
+このハンズオン演習の対象はJava基礎知識を有することが望ましいが、必須ではありません。
+
+## ＜内容＞:
 
 * **[演習 1: 前提環境／事前準備](#演習-1-前提環境事前準備)**
 * **[演習 2: GraalVM Enterpriseのインストール](#演習-2-GraalVM-Enterprise-Editionのインストール)**
