@@ -55,7 +55,7 @@ _Wednesday, 9 December 2020_
 <br/>
 
 (3)OSを選択後、以下のコンポーネントをダウンロードします。赤字表示のコンポーネントはこの演習に必要です。その他のオプショナルコンポーネントは演習では使いませんが、今後GraalVMの多くの機能を試したい場合はダウンロードしておいてください。
-*	<font color="Red">Oracle GraalVM Enterprise Edition Core（必須）</font>
+*	<span style="color: red; ">Oracle GraalVM Enterprise Edition Core（必須）</span>
 *	<font color="Red">Oracle GraalVM Enterprise Edition Native Image（必須）</font>
 *	GraalVM LLVM Toolchain Plugin（オプショナル）
 *	Oracle GraalVM Enterprise Edition Ruby Language Plugin（オプショナル）
