@@ -55,13 +55,14 @@ _Wednesday, 9 December 2020_
 <br/>
 
 (3)OSを選択後、以下のコンポーネントをダウンロードします。赤字表示のコンポーネントはこの演習に必要です。その他のオプショナルコンポーネントは演習では使いませんが、今後GraalVMの多くの機能を試したい場合はダウンロードしておいてください。
-*	<span style="color: red; ">Oracle GraalVM Enterprise Edition Core（必須）</span>
-*	<font color="Red">Oracle GraalVM Enterprise Edition Native Image（必須）</font>
+*	Oracle GraalVM Enterprise Edition Core（必須）
+*	Oracle GraalVM Enterprise Edition Native Image（必須）
+* Ideal Graph Visualizer（オプショナル）
 *	GraalVM LLVM Toolchain Plugin（オプショナル）
 *	Oracle GraalVM Enterprise Edition Ruby Language Plugin（オプショナル）
 * GraalVM Enterprise Edition Python Language Plugin（オプショナル）
 *	Oracle GraalVM Enterprise Edition WebAssembly（オプショナル）
-* <font color="Red">GraalVM R Language Plugin (必須） </font>   
+* GraalVM R Language Plugin (必須）   
 ※R Pluginは直接ダウンロードできず、GraalVMのインストール・ユーティリティー(guコマンド)を使用してインストールします。)
 
   ![Download Picture 3](images/GraalVMinstall03.JPG)
@@ -74,8 +75,8 @@ _Wednesday, 9 December 2020_
 <br/>
 
 コンポーネントをダウンロード後、Linuxのファイルシステム上に下記のようなモジュール一覧が表示されます。（赤線で囲まれている部分はこの演習で使うモジュールです）：
-* <font color="Red">graalvm-ee-java8-linux-amd64-20.1.0.tar.gz</font>
-* <font color="Red">llvm-toolchain-installable-java8-linux-amd64-20.1.0.jar</font>
+* graalvm-ee-java8-linux-amd64-20.1.0.tar.gz
+* llvm-toolchain-installable-java8-linux-amd64-20.1.0.jar
 *  native-image-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
 *  python-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
 *  namedruby-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
