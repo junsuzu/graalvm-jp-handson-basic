@@ -19,8 +19,8 @@ _Wednesday, 9 December 2020_
    * [2.3: Native Imageの依存ライブラリー](#23-Native-Imageの依存ライブラリー)
 
 * **[演習 3: High-performance JIT コンパイラー](#演習-3-High-performance-JIT-コンパイラー)**
-* **[演習 4: Native Image](#演習-4-Native-Image)**
-* **[演習 5: Polyglot](#演習-5-Polyglot)**
+* **[演習 4: Native Imageの生成と実行](#演習-4-Native-Imageの生成と実行)**
+* **[演習 5: Polyglotプログラミングと実行](#演習-5-Polyglotプログラミングと実行)**
 <br/>
 <br/>
 
@@ -41,34 +41,41 @@ _Wednesday, 9 December 2020_
 
 以下はGraalVM Enterprise Edition 20.1.0 for JDK 8をインストール手順となります。
 
-# 2.1: GraalVM EE20.1.0のCoreパッケージ
+# 2.1: GraalVM EE20.1.0のダウンロード
 (1) [OTN - Oracle Technology Network](https://www.oracle.com/downloads/graalvm-downloads.html)　からGraalVM Enterprise Editionをダウンロードします。下図のように"GraalVM Enterprise Edition 20 Current Release" タブを選択します。
 
-  ![Download Picture 1](images/GraalVMinstall01.JPG)
+  ![Download Picture 1](images/GraalVMinstall01.JPG) 
 
-(2)“Release Version 20.1.0, Java Version 8, Linux”を選択します。 MacOSを使用している場合macOSを選択してください。現時点でWindows版ではLinuxとMacOSに比べてGraalVMのフィーチャーが少ないので、本ワークショップではWindows版を選択しません。
+<br/>
+
+(2)“Release Version 20.1.0, Java Version 8, Linux”を選択します。 MacOSを使用している場合macOSを選択してください。現時点でWindows版ではLinuxとMacOSに比べてGraalVMのフィーチャーが少ないので、この演習ではWindows版を選択しません。
 
   ![Download Picture 2](images/GraalVMinstall02.JPG)
 
-(3)OSを選択後、以下３つのコンポーネントをダウンロードしてください。
-1.	Oracle GraalVM Enterprise Edition Core
-2.	Oracle GraalVM Enterprise Edition Native Image
-3.	GraalVM LLVM Toolchain Plugin
-また、本ワークショップでは上記３つのコンポーネント以外に、”GraalVM R Language Plugin” も必要になりますので、後にGraalVMのインストール・ユーティリティー(gu)を使用して該当コンポーネントをインストールします。
+<br/>
+
+(3)OSを選択後、以下のコンポーネントをダウンロードします。赤字表示のコンポーネントはこの演習に必要です。その他のオプショナルコンポーネントは演習では使いませんが、今後GraalVMの多くの機能を試したい場合はダウンロードしておいてください。
+*	<font color="Red">Oracle GraalVM Enterprise Edition Core（必須）</font>
+*	<font color="Red">Oracle GraalVM Enterprise Edition Native Image（必須）</font>
+*	GraalVM LLVM Toolchain Plugin（オプショナル）
+*	Oracle GraalVM Enterprise Edition Ruby Language Plugin（オプショナル）
+* GraalVM Enterprise Edition Python Language Plugin（オプショナル）
+*	Oracle GraalVM Enterprise Edition WebAssembly（オプショナル）
+* <font color="Red">GraalVM R Language Plugin (必須） </font>   
+※R Pluginは直接ダウンロードできず、GraalVMのインストール・ユーティリティー(guコマンド)を使用してインストールします。)
 
   ![Download Picture 3](images/GraalVMinstall03.JPG)
-  本ワークショップでは使いませんが、オプションとして以下のコンポーネントも併せてインストールしてみてください：
-1.	GraalVM Enterprise Edition Python Language Plugin
-2.	Oracle GraalVM Enterprise Edition Ruby Language Plugin
-3.	Oracle GraalVM Enterprise Edition WebAssembly Language Plugin
-上記バイナリーをダウンロードするために、OTNにログインする必要があります。OTNアカウントをお持ちでない方は以下のログイン画面から作成してください。
+
+上記コンポーネントをダウンロードするためには、OTNにログインする必要があります。OTNアカウントをお持ちでない方は以下のログイン画面から作成してください。
 
 
   ![Download Picture 4](images/GraalVMinstall04.JPG)
 
-モジュールをダウンロード後Linuxのファイルシステム上、下記のようにファイル一覧になります（赤線で囲まれている部分は本ワークショップで使うモジュールです）：
-* graalvm-ee-java8-linux-amd64-20.1.0.tar.gz
-* llvm-toolchain-installable-java8-linux-amd64-20.1.0.jar
+<br/>
+
+コンポーネントをダウンロード後、Linuxのファイルシステム上に下記のようなモジュール一覧が表示されます。（赤線で囲まれている部分はこの演習で使うモジュールです）：
+* <font color="Red">graalvm-ee-java8-linux-amd64-20.1.0.tar.gz</font>
+* <font color="Red">llvm-toolchain-installable-java8-linux-amd64-20.1.0.jar</font>
 *  native-image-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
 *  python-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
 *  namedruby-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
@@ -324,7 +331,7 @@ sys     0m2.172s
 以上の結果により、GraalVMのJITコンパイラーによる実行時間は従来のHotSpotコンパイラーに比べて約３０％向上しました。  
 <br/>
 <br/>
-# 演習 4: Native Image
+# 演習 4: Native Imageの生成と実行
 この演習の中に、GraalVMの中のAhead-of-Time(AOT)機能を利用して軽量で高速起動のNaitve Imageを作成します。  
 
 JITコンパイラーはLong-runningや高いピーク時スループットが要求されるアプリに強味を持つ一方、スタートアップ時間を要することと、比較的に多くなメモリーを消費します。例えば、ファイルサイズの小さい（１KB)ファイルに対してTopTenクラスを実行した場合、起動時間と消費メモリーを測定してみます。　　
@@ -471,7 +478,7 @@ suscipit = 2
 <br/>
 <br/>
 
-# 演習 5: Polyglot
+# 演習 5: Polyglotプログラミングと実行
 
 GraalVMはTruffleというフレームワークを使用してJava以外のプログラミング言語をGraalVMのJITコンパイラー上で動かすことができます。以下の演習では、一本のJavaScriptプログラム（polyglot.js)の中にGraalVMのpolyglot APIを使用し、JavaとRの両方を呼び出します。大きい整数の扱いがより効率的であるJavaのBigIntegerクラスを利用しながら、描画が得意とするRで3Dグラフを作成します。  
 
