@@ -27,7 +27,7 @@
    * [1.1: GraalVM EE20.1.0のダウンロード](#11-GraalVM-EE2010のダウンロード)
    * [1.2: GraalVM Coreパッケージのインストール](#12-GraalVM-Coreパッケージのインストール)
    * [1.3: Native Imageのインストール](#13-Native-Imageのインストール)
-   * [1.4: R言語プラグインのインストール](#14-R言語プラグインのインストール)
+   * [1.4: LLVMとR言語プラグインのインストール](#14-LLVMとR言語プラグインのインストール)
 
 * **[演習 2: High-performance JIT コンパイラー(coming soon)](#演習-2-High-performance-JIT-コンパイラーcoming-soon)**
 * **[演習 3: Native Imageの生成と実行(coming soon)](#演習-3-Native-Imageの生成と実行coming-soon)**
@@ -57,7 +57,7 @@
 *	Oracle GraalVM Enterprise Edition Core（必須）
 *	Oracle GraalVM Enterprise Edition Native Image（必須）
 * Ideal Graph Visualizer（オプショナル）
-*	GraalVM LLVM Toolchain Plugin（オプショナル）
+*	GraalVM LLVM Toolchain Plugin（必須）
 *	Oracle GraalVM Enterprise Edition Ruby Language Plugin（オプショナル）
 * GraalVM Enterprise Edition Python Language Plugin（オプショナル）
 *	Oracle GraalVM Enterprise Edition WebAssembly（オプショナル）
@@ -76,7 +76,7 @@
 コンポーネントをダウンロードした後、Linuxファイルシステム上に下記のようなモジュール一覧が表示されます：
 * graalvm-ee-java8-linux-amd64-20.1.0.tar.gz(必須)
 * idealgraphvisualizer-20.1.0-all.zip
-* llvm-toolchain-installable-java8-linux-amd64-20.1.0.jar
+* llvm-toolchain-installable-java8-linux-amd64-20.1.0.jar（必須）
 *  native-image-installable-svm-svmee-java8-linux-amd64-20.1.0.jar(必須)
 *  python-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
 *  namedruby-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
@@ -187,15 +187,20 @@ MacOS
   >
 <br/>
 
-# 1.4: R言語プラグインのインストール
+# 1.4: LLVMとR言語プラグインのインストール
 
-(1)R言語プラグインのインストール  
+(1)LLVM-toolchainプラグインのインストール  
+以下のコマンドを実行し、必要なモジュールを自動的にgithubよりダウンロードされます。
+  >```sh
+  >gu install llvm-toolchain
+  >```
+(2)R言語プラグインのインストール  
 以下のコマンドを実行し、必要なモジュールを自動的にgithubよりダウンロードされます。
   >```sh
   >gu install R
   >```
 
-(2)R言語ソースのコンフィグ  
+(3)R言語ソースのコンフィグ  
 
 以下のコマンドでR言語ソースのコンフィグ作業を実施します。
   >```sh
