@@ -8,41 +8,39 @@
 * Polyglot（多言語）プログラミングと実行  
 
 このハンズオン演習の対象はJava基礎知識を有することは望ましいが、必須ではありません。  
-(※この内容はOracle主催の「Oracle GraalVM Enterprise Virtual Hands-On Lab」の演習部分にあたります。参加者はこちらの内容に沿って事前環境セットアップおよび当日演習を実施して頂けます）。
 
-## ＜内容＞:
+※この内容はOracle主催の「Oracle GraalVM Enterprise Virtual Hands-On Lab」の演習部分にあたります。参加者はこちらの内容に沿って事前環境セットアップおよび当日演習を実施して頂けます。また単独でGraalVMの入門演習としてもご利用頂けます。  
+<br/>
 
-* **[演習 1: 前提環境／事前準備](#演習-1-前提環境事前準備)**
-* **[演習 2: GraalVM Enterpriseのインストール](#演習-2-GraalVM-Enterprise-Editionのインストール)**
-   * [2.1: GraalVM EE20.1.0のダウンロード](#21-GraalVM-EE2010のダウンロード)
-   * [2.2: GraalVM Coreパッケージのインストール](#22-GraalVM-Coreパッケージのインストール)
-   * [2.3: Native Imageのインストール](#23-Native-Imageのインストール)
-   * [2.4: R言語コンポーネントのインストール](#24-R言語コンポーネントのインストール)
+## ＜前提環境／事前準備＞
+* ハンズオンの内容はWindows10でWSL(Windows Subsystem for Linux)を利用し、LinuxディストリビューションのUbuntu20.04をインストールした環境を前提に進みます。  
+* Ubuntu以外のLinuxおよびMacOS、Windowsもサポートされます。
+* Githubリポジトリーからダウンロードすることがあるので、インターネットに繋がる状態が必要です。  
 
-* **[演習 3: High-performance JIT コンパイラー(coming soon)](#演習-3-High-performance-JIT-コンパイラーcoming-soon)**
-* **[演習 4: Native Imageの生成と実行(coming soon)](#演習-4-Native-Imageの生成と実行coming-soon)**
-* **[演習 5: Polyglotプログラミングと実行(coming soon)](#演習-5-Polyglotプログラミングと実行coming-soon)**
+※「Oracle GraalVM Enterprise Virtual Hands-On Lab」の参加者は基本的に事前セットアップ済みの環境でハンズオン演習を実施して頂きます。ただし、演習が不要な方は、演習部分を視聴のみして頂くことも可能です。  
+<br/>
+
+
+## ＜演習内容＞
+
+* **[演習 1: GraalVM Enterpriseのインストール](#演習-1-GraalVM-Enterprise-Editionのインストール)**
+   * [1.1: GraalVM EE20.1.0のダウンロード](#11-GraalVM-EE2010のダウンロード)
+   * [1.2: GraalVM Coreパッケージのインストール](#12-GraalVM-Coreパッケージのインストール)
+   * [1.3: Native Imageのインストール](#13-Native-Imageのインストール)
+   * [1.4: R言語プラグインのインストール](#14-R言語プラグインのインストール)
+
+* **[演習 2: High-performance JIT コンパイラー(coming soon)](#演習-2-High-performance-JIT-コンパイラーcoming-soon)**
+* **[演習 3: Native Imageの生成と実行(coming soon)](#演習-3-Native-Imageの生成と実行coming-soon)**
+* **[演習 4: Polyglotプログラミングと実行(coming soon)](#演習-4-Polyglotプログラミングと実行coming-soon)**
 <br/>
 <br/>
 
-# 演習 1: 前提環境／事前準備
 
-本ワークショップを実施するための前提環境および事前準備作業を以下に記述します。Workshop当日は基本的に参加者に事前準備なされた環境のもとでハンズオン演習を実施して頂きます。
-
-※ただし、ハンズオン演習部分を省きたい場合方は、GraalVMに関するプレゼンやDemoをご覧になりながら受講のみして頂くことも可能です。
-
-
-  * 本ワークショップはLinux環境（WindowsマシーンのWSL環境を含む）を前提に進みます。（MacおよびWindows自体はGraalVMをサポートしますが、本ワークショップではUbuntu20.04の環境で実施、検証されたものです。
-  * GitとCurlを事前にインストールしておいてください。
-  * Githubリポジトリーからダウンロードすることがあるので、インターネットに繋がる状態が必要です。
-  * 
-<br/>
-
-# 演習 2: GraalVM Enterprise Editionのインストール
+# 演習 1: GraalVM Enterprise Editionのインストール
 
 以下はGraalVM Enterprise Edition 20.1.0 for JDK 8をインストール手順となります。
 
-# 2.1: GraalVM EE20.1.0のダウンロード
+# 1.1: GraalVM EE20.1.0のダウンロード
 (1) [OTN - Oracle Technology Network](https://www.oracle.com/downloads/graalvm-downloads.html)　からGraalVM Enterprise Editionをダウンロードします。下図のように"GraalVM Enterprise Edition 20 Current Release" タブを選択します。
 
   ![Download Picture 1](images/GraalVMinstall01.JPG) 
@@ -88,7 +86,7 @@
 
 <br/>
 
-# 2.2: GraalVM Coreパッケージのインストール
+# 1.2: GraalVM Coreパッケージのインストール
 
 (1)各モジュールをダウンロードした後、ダウンロード先のディレクトリーにて以下のコマンドを実行し、Coreパッケージを解凍します。
   >```sh
@@ -154,7 +152,7 @@ zshの場合
   >```
 <br/>
 
-# 2.3: Native Imageのインストール
+# 1.3: Native Imageのインストール
 
 (1)　Native ImageをインストールするのにGraalVM Utility(gu)を使用します。モジュールのダウンロード先にて下記コマンドを実行します。
   >```sh
@@ -189,9 +187,9 @@ MacOS
   >
 <br/>
 
-# 2.4: R言語コンポーネントのインストール
+# 1.4: R言語プラグインのインストール
 
-(1)R言語コンポーネントのインストール  
+(1)R言語プラグインのインストール  
 以下のコマンドを実行し、必要なモジュールを自動的にgithubよりダウンロードされます。
   >```sh
   >gu install R
@@ -239,17 +237,17 @@ MacOS
 <br/>
 <br/>
 
-# 演習 3: High-performance JIT コンパイラー(coming soon)
+# 演習 2: High-performance JIT コンパイラー(coming soon)
 
 
 <br/>
 <br/>
 
-# 演習 4: Native Imageの生成と実行(coming soon)
+# 演習 3: Native Imageの生成と実行(coming soon)
 
   
 <br/>
 <br/>
 
-# 演習 5: Polyglotプログラミングと実行(coming soon)
+# 演習 4: Polyglotプログラミングと実行(coming soon)
 
