@@ -144,7 +144,7 @@ zshの場合
   >```
 
 <br/>
-以下の出力結果を確認できれば、GraalVM 20.1.0 Java8が正常にインストールされたことになります。
+以下の出力結果を確認できれば、GraalVM 20.1.0 for Java8が正常にインストールされたことになります。
 
   >```sh
   >Java(TM) SE Runtime Environment (build 1.8.0_251-b08)
