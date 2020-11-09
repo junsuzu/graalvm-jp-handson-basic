@@ -2,7 +2,7 @@
 _Wednesday, 9 December 2020_
 
 ## ＜目的と対象＞：
-このハンズオン演習は、次世代Polyglot(多言語対応）環境であるOracle GraalVM Enterprise版の導入、操作手順を演習形式で学ぶためのガイドです。この演習を通じて以下の項目をマスターすることを目的としています。  
+このハンズオン演習は、次世代Polyglot(多言語対応）ランタイム環境であるOracle GraalVM Enterprise版の導入、操作手順を演習形式で学ぶためのガイドです。この演習を通じて以下の項目をマスターすることを目的としています。  
 * GraalVMをPC環境への導入
 * 新しいJITコンパイラー上でJavaクラスの実行
 * 新しいAOTコンパイラー上でNative Imageの生成と実行
