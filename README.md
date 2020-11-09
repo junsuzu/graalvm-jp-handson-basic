@@ -14,9 +14,10 @@ _Wednesday, 9 December 2020_
 
 * **[演習 1: 前提環境／事前準備](#演習-1-前提環境事前準備)**
 * **[演習 2: GraalVM Enterpriseのインストール](#演習-2-GraalVM-Enterprise-Editionのインストール)**
-   * [2.1: GraalVM EE20.1.0のCoreパッケージ](#21-GraalVM-EE2010のCoreパッケージ)
-   * [2.2: Native Image, LLVM-toolchain, R言語コンポーネント](#22-Native-Image-LLVM-toolchain-R言語コンポーネント)
-   * [2.3: Native Imageの依存ライブラリー](#23-Native-Imageの依存ライブラリー)
+   * [2.1: GraalVM EE20.1.0のダウンロード](#21-GraalVM-EE2010のダウンロード)
+   * [2.2: GraalVM Coreパッケージのインストール](#22-GraalVM-Coreパッケージのインストール)
+   * [2.3: Native Imageのインストール](#23-Native-Imageのインストール)
+   * [2.4: R言語コンポーネントのインストール](#24-R言語コンポーネントのインストール)
 
 * **[演習 3: High-performance JIT コンパイラー](#演習-3-High-performance-JIT-コンパイラー)**
 * **[演習 4: Native Imageの生成と実行](#演習-4-Native-Imageの生成と実行)**
@@ -54,7 +55,7 @@ _Wednesday, 9 December 2020_
 
 <br/>
 
-(3)OSを選択後、以下のコンポーネントをダウンロードします。赤字表示のコンポーネントはこの演習に必要です。その他のオプショナルコンポーネントは演習では使いませんが、今後GraalVMの多くの機能を試したい場合はダウンロードしておいてください。
+(3)OSを選択後、以下のコンポーネントをダウンロードします。必須コンポーネントはこの演習に必要です。その他のオプショナルコンポーネントは演習では使いませんが、今後GraalVMの多くの機能を試したい場合はダウンロードしておいてください。
 *	Oracle GraalVM Enterprise Edition Core（必須）
 *	Oracle GraalVM Enterprise Edition Native Image（必須）
 * Ideal Graph Visualizer（オプショナル）
@@ -74,34 +75,42 @@ _Wednesday, 9 December 2020_
 
 <br/>
 
-コンポーネントをダウンロード後、Linuxのファイルシステム上に下記のようなモジュール一覧が表示されます。（赤線で囲まれている部分はこの演習で使うモジュールです）：
-* graalvm-ee-java8-linux-amd64-20.1.0.tar.gz
+コンポーネントをダウンロードした後、Linuxファイルシステム上に下記のようなモジュール一覧が表示されます：
+* graalvm-ee-java8-linux-amd64-20.1.0.tar.gz(必須)
+* idealgraphvisualizer-20.1.0-all.zip
 * llvm-toolchain-installable-java8-linux-amd64-20.1.0.jar
-*  native-image-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
+*  native-image-installable-svm-svmee-java8-linux-amd64-20.1.0.jar(必須)
 *  python-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
 *  namedruby-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
 * wasm-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
 
- ![Download Picture 5](images/GraalVMinstall05_1.JPG)
+ ![Download Picture 5](images/GraalVMinstall05.JPG)
 
+<br/>
 
-(4)モジュールをダウンロード後、以下のように解凍します
+# 2.2: GraalVM Coreパッケージのインストール
+
+(1)各モジュールをダウンロードした後、ダウンロード先のディレクトリーにて以下のコマンドを実行し、Coreパッケージを解凍します。
   >```sh
   >tar -zxf graalvm-ee-java8-linux-amd64-20.1.0.tar.gz
   >```
-
+<br/>
 上記コマンドの実行により”graalvm-ee-java8-20.1.0”というフォルダーが作成されます。
     
 ![Download Picture 6](images/GraalVMinstall06.JPG)
 
-そのフォルダーをJava Homeとなる任意のディレクトリーに移動してください。下記の例では/optの配下に移動する例です：
+<br/>
+フォルダーを任意のディレクトリーに移動します。そのディレクトリー配下がGraalVMのインストール先(Java Home)となります。下記の例ではフォルダーを/optの配下に移動する例です：
+
   >```sh
   >sudo mv graalvm-ee-java8-20.1.0 /opt/.
   >```
 
-これにより、GraalVMのインストールディレクトリーは/opt/graalvm-ee-java8-20.1.0になります。
+これにより、GraalVMのインストール・ディレクトリー（Java Home)は/opt/graalvm-ee-java8-20.1.0になります。
 
-(5)インストールしたGraalVMのパスを通すためには、以下のコマンドを実行します。
+<br/>
+
+(2)インストールしたGraalVMのパスを通すためには、以下のコマンドを実行します。
 
 bashの場合
   >```sh
@@ -131,44 +140,66 @@ zshの場合
   >source ~/.zshrc
   >```
 
-以上でGraalVMのインストールが完了します。確認するため以下のjavaコマンドを実行します。
+以上でGraalVM Coreパッケージのインストールが完了しました。確認するため以下のjavaコマンドを実行します。
   >```sh
   >java –version
   >```
 
+<br/>
 以下の出力結果を確認できれば、GraalVM 20.1.0 Java8が正常にインストールされたことになります。
+
   >```sh
   >Java(TM) SE Runtime Environment (build 1.8.0_251-b08)
   >Java HotSpot(TM) 64-Bit Server VM GraalVM EE 20.1.0 (build 25.251-b08-jvmci-20.1-b02, mixed mode)
   >```
 <br/>
 
-# 2.2: Native Image, LLVM-toolchain, R言語コンポーネント
+# 2.3: Native Imageのインストール
 
-(6)　最後の手順として、Native Image, LLVM toolchain, Rをインストールします。インストールするのにGraalVM Utility guを使用します。
+(1)　Native ImageをインストールするのにGraalVM Utility(gu)を使用します。モジュールのダウンロード先にて下記コマンドを実行します。
   >```sh
   >gu install -L native-image-installable-svm-svmee-java8-darwin-amd64-20.1.0.jar
   >```
 
+(2) Native Image依存ライブラリーのインストール
+
+Native Imageの生成と実行は、以下３つのライブラリーが必要です。  
+* glibc-devel: 標準 C ライブラリを使用した開発に必要なファイル
+* zlib-devel: zip や gzip に使われている圧縮アルゴリズムをライブラリ化したもの
+* gcc: C/C++など複数言語のコンパイラー集  
+
+OSによりインストール・コマンドは異なります：  
+
+Ubuntu
   >```sh
-  >gu install -L llvm-toolchain-installable-java8-darwin-amd64-20.1.0.jar
+  >sudo apt-get install build-essential libz-dev zlib1g-dev
   >```
 
+Oracle Linux
+  >```sh
+  >sudo yum install gcc glibc-devel zlib-devel
+  >```
+その他Linux
+  >```sh
+  >sudo dnf install gcc glibc-devel zlib-devel libstdc++-static
+  >```
+MacOS
+  >```sh
+  >xcode-select --install
+  >
+<br/>
+
+# 2.4: R言語コンポーネントのインストール
+
+(1)R言語コンポーネントのインストール  
+以下のコマンドを実行し、必要なモジュールを自動的にgithubよりダウンロードされます。
   >```sh
   >gu install R
   >```
-(※Rのインストール時、必要なモジュールを自動的にgithubよりダウンロードされます)]
 
-インストール後、以下のguコマンドでインストールされたモジュールを確認します：
-  >```sh
-  >gu list
-  >```
+(2)R言語ソースのコンフィグ  
 
-![Download Picture 7](images/GraalVMinstall07.JPG)
-
-
-
-インストール完了後、以下のR言語ソースのコンフィグ作業も実施してください。
+以下のコマンドでR言語ソースのコンフィグ作業を実施します。
   >```sh
   >/opt/graalvm-ee-java8-20.1.0/jre/languages/R/bin/configure_fastr
   >```
@@ -188,19 +219,24 @@ zshの場合
     DONE
 
 <br/>
+インストール完了後、以下のguコマンドでインストールされたモジュールを確認します：
 
-# 2.3: Native Imageの依存ライブラリー
-
-Native Imageの実行は、glibc-devel, zlib-devel, gccの三つのライブラリーが必要です。下記コマンドでインストールしてください。
   >```sh
-  >sudo apt-get install build-essential libz-dev zlib1g-dev
+  >gu list
   >```
 
-おめでとうございます！以上の作業で本ワークショップに必要な環境設定がすべて完了しました。以下のタスクが実施されました：
-1.	GraalVM EE20.1.0のCoreパッケージをインストールし、クラスパスを設定しました。
-2.	Native Image, LLVM-toolchain, R言語の三つのコンポーネントをインストールしました。
-3.	Rのコンフィグを実施しました。
-4. Native Imageに必要なライブラリーをインストールしました.  
+![Download Picture 7](images/GraalVMinstall07.JPG)
+
+
+<br/>
+<br/>
+お疲れ様でした！以上の作業で本ワークショップに必要な環境設定がすべて完了しました。演習では以下のタスクを実施しました。
+
+1.	GraalVM EE20.1.0のCoreパッケージのインストールおよびクラスパスの設定
+2. Native Imageおよび依存ライブラリーのインストール
+3. R言語のインストールとソースのコンフィグ  
+
+<br/>
 <br/>
 
 # 演習 3: High-performance JIT コンパイラー
