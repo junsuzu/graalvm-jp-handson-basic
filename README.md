@@ -243,10 +243,134 @@ MacOS
 <br/>
 
 # 演習 2: High-performance JIT コンパイラー(coming soon)
+以下の演習は「Top 10 Things To Do With GraalVM」 の内容を使用します。  
+https://medium.com/graalvm/graalvm-ten-things-12d9111f307d
 
+(1)上記内容を使用するため、Githubよりソースをダウンロードします。以下のコマンドを実行します。
 
+  >```sh
+  >git clone https://github.com/marthenlt/native-image-workshop.git
+  >```
+
+(2)ダウンロードしたディレクトリーに移動します。
+
+  >```sh
+  >cd graalvm-ten-things
+  >```
+
+(3)以下のコマンドを実行し、large.txtファイルを作成します。この作業は時間がかかります。
+
+  >```sh
+  >make large.txt
+  >```
+
+(4)large.txtファイルが作成されたことをlsコマンドで確認します。サイズが150MBであることを確認してください。
+
+![Download Picture 9](images/GraalVMinstall09.JPG)
+
+(5)TopTen.javaはlarge.txtの中から単語を集計し、上位トップテンの単語一覧を出力するJavaプログラムです。このプログラムはStream Java APIを使用し、すべての単語をソート、カウントします。 
+
+以下はプログラムの内容です。
+```java
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class TopTen {
+
+    public static void main(String[] args) {
+        Arrays.stream(args)
+                .flatMap(TopTen::fileLines)
+                .flatMap(line -> Arrays.stream(line.split("\\b")))
+                .map(word -> word.replaceAll("[^a-zA-Z]", ""))
+                .filter(word -> word.length() > 0)
+                .map(word -> word.toLowerCase())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .sorted((a, b) -> -a.getValue().compareTo(b.getValue()))
+                .limit(10)
+                .forEach(e -> System.out.format("%s = %d%n", e.getKey(), e.getValue()));
+    }
+
+    private static Stream<String> fileLines(String path) {
+        try {
+            return Files.lines(Paths.get(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+}
+```
+
+(6)TopTen.javaをコンパイラーします。デフォルトではGraalVMのJavaコンパイラーが有効で、使用されます。
+
+  >```sh
+  >javac TopTen.java
+  >```
+
+(7)GraalVMのJITコンパイラーはJavaで書かれています。以下の最適化によりJITコンパイラーの実行速度が従来C++で書かれていたコンパイラーよりも速くなります。  
+* Partial Escape Analysis  
+* In-lining  
+* Path Duplication
+
+以下のJavaコマンドでコンパイルされたJavaクラスを実行し、実行タイムを測ります。引数にはlarge.txtを指定します。
+
+  >```sh
+  >time java TopTen large.txt
+  >```
+
+実行結果と実行時間を確認します。
+
+```
+sed = 502500
+ut = 392500
+in = 377500
+et = 352500
+id = 317500
+eu = 317500
+eget = 302500
+vel = 300000
+a = 287500
+sit = 282500
+
+real    0m32.699s
+user    0m34.078s
+sys     0m3.406s  
+```  
+(8)従来のJITコンパイラーとの比較のため、以下のJavaコマンドでフラッグを立てます：-XX:-UseJVMCICompile。JVMCIはGraalVMとJVMのあいだのインタフェースになります。
+
+  >```sh
+  >time java -XX:-UseJVMCICompiler TopTen large.txt
+  >```
+
+実行結果と実行時間を確認します。
+
+```
+sed = 502500
+ut = 392500
+in = 377500
+et = 352500
+id = 317500
+eu = 317500
+eget = 302500
+vel = 300000
+a = 287500
+sit = 282500
+
+real    0m48.901s
+user    0m49.219s
+sys     0m2.172s
+
+```  
+以上の結果により、GraalVMのJITコンパイラーによる実行時間は従来のHotSpotコンパイラーに比べて約３０％向上しました。  
 <br/>
 <br/>
+
 
 # 演習 3: Native Imageの生成と実行(coming soon)
 
