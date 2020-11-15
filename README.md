@@ -530,7 +530,7 @@ GraalVM内部ではTruffleというフレームワークを使用してJava以�
   >```
 
 
-(2)polyglot.jsの中身を確認します。
+(2)polyglot.jsの中身を確認します。このプログラムの中にJavaとRの両方を呼び出しています。
 ```js
 const express = require('express')
 const app = express()
@@ -562,6 +562,7 @@ app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 })
 ```
+
 
 (3)polyglot.jsを実行します。
 >```sh
