@@ -469,7 +469,7 @@ linuser@JUNSUZU-JP:~/handson/graalvm-ten-things$ native-image --no-server --no-f
   >du -h topten
   >```
 
-(6)以下のコマンドを実行し、small.txtの単語を集計するプログラムTopTenを実行します。
+(6)以下のコマンドで、実行ファイルtoptenを実行します。引数をsmall.txtを設定します。
 
   >```sh
   >/usr/bin/time -v ./topten small.txt
@@ -521,7 +521,7 @@ suscipit = 2
   
 
 # 演習 4: Polyglotプログラミングと実行
-GraalVMはTruffleというフレームワークを使用してJava以外のプログラミング言語をGraalVMのJITコンパイラー上で動かすことができます。以下の演習では、一本のJavaScriptプログラム（polyglot.js)の中にGraalVMのpolyglot APIを使用し、JavaとRの両方を呼び出します。大きい整数の扱いがより効率的であるJavaのBigIntegerクラスを利用しながら、描画が得意とするRで3Dグラフを作成します。  
+GraalVM内部ではTruffleというフレームワークを使用してJava以外のプログラミング言語をGraalVMのJITコンパイラー上で動かすことができます。以下の演習では、一本のJavaScriptプログラム（polyglot.js)の中にGraalVMのpolyglot APIを使用し、JavaとRの両方を呼び出します。大きい整数の扱いがより効率的であるJavaのBigIntegerクラスを利用しながら、描画が得意とするRで3Dグラフを作成します。  
 
 (1)まずNode.jsで利用できるWebアプリケーションフレームワークExpressをインストールします。以下のコマンドを実行します。
 
