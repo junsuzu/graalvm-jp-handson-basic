@@ -29,9 +29,9 @@
    * [1.3: Native Imageのインストール](#13-Native-Imageのインストール)
    * [1.4: LLVMとR言語プラグインのインストール](#14-LLVMとR言語プラグインのインストール)
 
-* **[演習 2: High-performance JIT コンパイラー(coming soon)](#演習-2-High-performance-JIT-コンパイラーcoming-soon)**
-* **[演習 3: Native Imageの生成と実行(coming soon)](#演習-3-Native-Imageの生成と実行coming-soon)**
-* **[演習 4: Polyglotプログラミングと実行(coming soon)](#演習-4-Polyglotプログラミングと実行coming-soon)**
+* **[演習 2: High-performance JIT コンパイラー(coming soon)](#演習-2-High-performance-JIT-コンパイラー)**
+* **[演習 3: Native Imageの生成と実行(coming soon)](#演習-3-Native-Imageの生成と実行)**
+* **[演習 4: Polyglotプログラミングと実行(coming soon)](#演習-4-Polyglotプログラミングと実行)**
 <br/>
 <br/>
 
