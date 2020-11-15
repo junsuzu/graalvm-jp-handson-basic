@@ -307,7 +307,7 @@ public class TopTen {
 }
 ```
 
-(6)TopTen.javaをコンパイラーします。デフォルトではクラスパスが通るGraalVMのJITコンパイラーが有効になります。
+(6)TopTen.javaをコンパイルします。デフォルトではクラスパスが通るGraalVMのJITコンパイラーが有効になります。
 
   >```sh
   >javac TopTen.java
