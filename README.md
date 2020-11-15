@@ -434,7 +434,7 @@ suscipit = 2
         Exit status: 0
 ```  
 
-(5)GraalVMが提供しているツールを使用してNative Imageを作成します。
+(5)GraalVMが提供しているツールを使用して実行可能なNative Imageを作成します。実行ファイルの作成に少し時間がかかります。
 
   >```sh
   >native-image --no-server --no-fallback TopTen
@@ -459,7 +459,7 @@ linuser@JUNSUZU-JP:~/handson/graalvm-ten-things$ native-image --no-server --no-f
 [topten:166]        write:   1,849.13 ms,  2.89 GB
 [topten:166]      [total]:  90,988.07 ms,  2.89 GB
 ```  
-この実行により、軽量で実行ファイルtoptenが作成ました。
+これにより、軽量な実行ファイル"topten"が作成されたことを確認します。
 
 ![Download Picture 11](images/GraalVMinstall11.JPG)
 
