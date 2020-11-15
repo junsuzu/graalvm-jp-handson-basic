@@ -572,4 +572,3 @@ app.listen(3000, function () {
 ![Download Picture 12](images/GraalVMinstall12.JPG)
 
 <br/>
-<br/>
