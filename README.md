@@ -307,7 +307,7 @@ public class TopTen {
 }
 ```
 
-(6)TopTen.javaをコンパイラーします。デフォルトではクラスパスが通るGraalVMのJavaコンパイラーが有効になります。
+(6)TopTen.javaをコンパイラーします。デフォルトではクラスパスが通るGraalVMのJITコンパイラーが有効になります。
 
   >```sh
   >javac TopTen.java
@@ -342,7 +342,7 @@ real    0m32.699s
 user    0m34.078s
 sys     0m3.406s  
 ```  
-(8)従来のJITコンパイラーとの比較のため、以下のJavaコマンドでフラッグを立てます：-XX:-UseJVMCICompile。JVMCIはGraalVMとJVMのあいだのインタフェースになります。
+(8)従来のJITコンパイラーと比較するため、以下のJavaコマンドでフラッグを立てます：-XX:-UseJVMCICompile。JVMCIはGraalVMとJVMのあいだのインタフェースです。このフラッグによりJVMCIが使用されず、従来のJITコンパイラーが使用されます。
 
   >```sh
   >time java -XX:-UseJVMCICompiler TopTen large.txt
@@ -367,7 +367,7 @@ user    0m49.219s
 sys     0m2.172s
 
 ```  
-以上の結果により、GraalVMのJITコンパイラーによる実行時間は従来のHotSpotコンパイラーに比べて約３０％向上しました。  
+以上の結果により、GraalVMのJITコンパイラーによる実行時間は従来のコンパイラーに比べて約30%短縮しました。  
 <br/>
 <br/>
 
