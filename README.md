@@ -246,29 +246,29 @@ MacOS
 以下の演習は「Top 10 Things To Do With GraalVM」 の内容を使用します。  
 https://medium.com/graalvm/graalvm-ten-things-12d9111f307d
 
-(1)上記内容を使用するため、Githubよりソースをダウンロードします。以下のコマンドを実行します。
+(1)上記内容を使用するため、Githubよりソースをダウンロードします。任意の作業ディレクトリーで以下のコマンドを実行します。
 
   >```sh
   >git clone https://github.com/marthenlt/native-image-workshop.git
   >```
 
-(2)ダウンロードしたディレクトリーに移動します。
+(2)上記コマンドの結果、"graalvm-ten-things"というディレクトリーが作成されます。そのディレクトリーに移動します。
 
   >```sh
   >cd graalvm-ten-things
   >```
 
-(3)以下のコマンドを実行し、large.txtファイルを作成します。この作業は時間がかかります。
+(3)以下のコマンドを実行し、サイズが約150MBに及ぶテキストファイル"large.txt"を作成します。この作業は少し時間がかかります。
 
   >```sh
   >make large.txt
   >```
 
-(4)large.txtファイルが作成されたことをlsコマンドで確認します。サイズが150MBであることを確認してください。
+(4)large.txtファイルが作成されたことをlsコマンドで確認します。サイズが150MBであることが確認できます。
 
 ![Download Picture 9](images/GraalVMinstall09.JPG)
 
-(5)TopTen.javaはlarge.txtの中から単語を集計し、上位トップテンの単語一覧を出力するJavaプログラムです。このプログラムはStream Java APIを使用し、すべての単語をソート、カウントします。 
+(5)この演習で使用するサンプルプログラムTopTen.javaはlarge.txtの中から単語を集計し、上位トップテンの単語一覧を出力するJavaプログラムです。このプログラムはStream Java APIを使用し、すべての単語をソートし、カウントします。 
 
 以下はプログラムの内容です。
 ```java
@@ -307,7 +307,7 @@ public class TopTen {
 }
 ```
 
-(6)TopTen.javaをコンパイラーします。デフォルトではGraalVMのJavaコンパイラーが有効で、使用されます。
+(6)TopTen.javaをコンパイラーします。デフォルトではクラスパスが通るGraalVMのJavaコンパイラーが有効になります。
 
   >```sh
   >javac TopTen.java
