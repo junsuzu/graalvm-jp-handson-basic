@@ -242,7 +242,7 @@ MacOS
 <br/>
 <br/>
 
-# 演習 2: High-performance JIT コンパイラー(coming soon)
+# 演習 2: High-performance JIT コンパイラー
 以下の演習は「Top 10 Things To Do With GraalVM」 の内容を使用します。  
 https://medium.com/graalvm/graalvm-ten-things-12d9111f307d
 
@@ -372,7 +372,7 @@ sys     0m2.172s
 <br/>
 
 
-# 演習 3: Native Imageの生成と実行(coming soon)
+# 演習 3: Native Imageの生成と実行
 この演習の中に、GraalVMの中のAhead-of-Time(AOT)機能を利用して軽量で高速起動のNaitve Imageを作成します。  
 
 JITコンパイラーはLong-runningや高いピーク時スループットが要求されるアプリに強味を持つ一方、スタートアップ時間を要することと、比較的に多くなメモリーを消費します。例えば、ファイルサイズの小さい（１KB)ファイルに対してTopTenクラスを実行した場合、起動時間と消費メモリーを測定してみます。　　
@@ -520,7 +520,7 @@ suscipit = 2
 <br/>
   
 
-# 演習 4: Polyglotプログラミングと実行(coming soon)
+# 演習 4: Polyglotプログラミングと実行
 GraalVMはTruffleというフレームワークを使用してJava以外のプログラミング言語をGraalVMのJITコンパイラー上で動かすことができます。以下の演習では、一本のJavaScriptプログラム（polyglot.js)の中にGraalVMのpolyglot APIを使用し、JavaとRの両方を呼び出します。大きい整数の扱いがより効率的であるJavaのBigIntegerクラスを利用しながら、描画が得意とするRで3Dグラフを作成します。  
 
 (1)まずNode.jsで利用できるWebアプリケーションフレームワークExpressをインストールします。以下のコマンドを実行します。
