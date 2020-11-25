@@ -395,7 +395,7 @@ JITコンパイラーはロングラン・アプリやピーク時高いスル�
 (4)以下のコマンドを実行し、small.txtの単語を集計するプログラムTopTenを実行します。
 
   >```sh
-  >time -v java TopTen small.txt
+  >/usr/bin/time -v java TopTen small.txt
   >```
 出力結果を確認し、実行時間とメモリーを確認します。
 ```
