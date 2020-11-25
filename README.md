@@ -249,7 +249,7 @@ https://medium.com/graalvm/graalvm-ten-things-12d9111f307d
 (1)上記内容を使用するため、Githubよりソースをダウンロードします。任意の作業ディレクトリーで以下のコマンドを実行します。
 
   >```sh
-  >git clone https://github.com/marthenlt/native-image-workshop.git
+  >git clone https://github.com/chrisseaton/graalvm-ten-things/
   >```
 
 (2)上記コマンドの結果、"graalvm-ten-things"というディレクトリーが作成されます。そのディレクトリーに移動します。
