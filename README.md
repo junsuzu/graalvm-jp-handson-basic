@@ -469,7 +469,7 @@ linuser@JUNSUZU-JP:~/handson/graalvm-ten-things$ native-image --no-server --no-f
   >du -h topten
   >```
 
-(6)以下のコマンドで、実行ファイルtoptenを実行します。引数をsmall.txtを設定します。
+(6)以下のコマンドで、実行ファイルtoptenを実行します。引数にsmall.txtを設定します。
 
   >```sh
   >/usr/bin/time -v ./topten small.txt
