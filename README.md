@@ -29,9 +29,9 @@
    * [1.3: Native Imageのインストール](#13-Native-Imageのインストール)
    * [1.4: LLVMとR言語プラグインのインストール](#14-LLVMとR言語プラグインのインストール)
 
-* **[演習 2: High-performance JIT コンパイラー(coming soon)](#演習-2-High-performance-JIT-コンパイラーcoming-soon)**
-* **[演習 3: Native Imageの生成と実行(coming soon)](#演習-3-Native-Imageの生成と実行coming-soon)**
-* **[演習 4: Polyglotプログラミングと実行(coming soon)](#演習-4-Polyglotプログラミングと実行coming-soon)**
+* **[演習 2: High-performance JIT コンパイラー](#演習-2-High-performance-JIT-コンパイラー)**
+* **[演習 3: Native Imageの生成と実行](#演習-3-Native-Imageの生成と実行)**
+* **[演習 4: Polyglotプログラミングと実行](#演習-4-Polyglotプログラミングと実行)**
 <br/>
 <br/>
 
@@ -162,8 +162,8 @@ zshの場合
 (2) Native Image依存ライブラリーのインストール
 
 Native Imageの生成と実行は、以下３つのライブラリーが必要です。  
-* glibc-devel: 標準 C ライブラリを使用した開発に必要なファイル
-* zlib-devel: zip や gzip に使われている圧縮アルゴリズムをライブラリ化したもの
+* glibc-devel: Cライブラリーの使用に必要なヘッダーとオブジェクトファイル
+* zlib-devel: zip や gzip ライブラリーの使用に必要なヘッダーファイル
 * gcc: C/C++など複数言語のコンパイラー集  
 
 OSによりインストール・コマンドは異なります：  
@@ -242,17 +242,334 @@ MacOS
 <br/>
 <br/>
 
-# 演習 2: High-performance JIT コンパイラー(coming soon)
+# 演習 2: High-performance JIT コンパイラー
+以下の演習は「Top 10 Things To Do With GraalVM」 の内容を使用します。  
+https://medium.com/graalvm/graalvm-ten-things-12d9111f307d
 
+(1)上記内容を使用するため、Githubよりソースをダウンロードします。任意の作業ディレクトリーで以下のコマンドを実行します。
 
+  >```sh
+  >git clone https://github.com/chrisseaton/graalvm-ten-things/
+  >```
+
+(2)上記コマンドの結果、"graalvm-ten-things"というディレクトリーが作成されます。そのディレクトリーに移動します。
+
+  >```sh
+  >cd graalvm-ten-things
+  >```
+
+(3)以下のコマンドを実行し、サイズが約150MBに及ぶテキストファイル"large.txt"を作成します。この作業は少し時間がかかります。
+
+  >```sh
+  >make large.txt
+  >```
+
+(4)large.txtファイルが作成されたことをlsコマンドで確認します。サイズが150MBであることが確認できます。
+
+![Download Picture 9](images/GraalVMinstall09.JPG)
+
+(5)この演習で使用するサンプルプログラムTopTen.javaはlarge.txtの中から単語を集計し、上位トップテンの単語一覧を出力するJavaプログラムです。このプログラムはStream Java APIを使用し、すべての単語をソートし、カウントします。 
+
+以下はプログラムの内容です。
+```java
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class TopTen {
+
+    public static void main(String[] args) {
+        Arrays.stream(args)
+                .flatMap(TopTen::fileLines)
+                .flatMap(line -> Arrays.stream(line.split("\\b")))
+                .map(word -> word.replaceAll("[^a-zA-Z]", ""))
+                .filter(word -> word.length() > 0)
+                .map(word -> word.toLowerCase())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .sorted((a, b) -> -a.getValue().compareTo(b.getValue()))
+                .limit(10)
+                .forEach(e -> System.out.format("%s = %d%n", e.getKey(), e.getValue()));
+    }
+
+    private static Stream<String> fileLines(String path) {
+        try {
+            return Files.lines(Paths.get(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+}
+```
+
+(6)TopTen.javaをコンパイルします。デフォルトではクラスパスが通るGraalVMのJITコンパイラーが有効になります。
+
+  >```sh
+  >javac TopTen.java
+  >```
+
+(7)GraalVMのJITコンパイラーはJavaで書かれています。以下の最適化によりJITコンパイラーの実行速度が従来C++で書かれていたコンパイラーよりも速くなります。  
+* Partial Escape Analysis  
+* In-lining  
+* Path Duplication
+
+以下のJavaコマンドでコンパイルされたJavaクラスを実行し、実行タイムを測ります。引数にはlarge.txtを指定します。
+
+  >```sh
+  >time java TopTen large.txt
+  >```
+
+実行結果と実行時間を確認します。
+
+```
+sed = 502500
+ut = 392500
+in = 377500
+et = 352500
+id = 317500
+eu = 317500
+eget = 302500
+vel = 300000
+a = 287500
+sit = 282500
+
+real    0m32.699s
+user    0m34.078s
+sys     0m3.406s  
+```  
+(8)従来のJITコンパイラーと比較するため、以下のJavaコマンドでフラッグを立てます：-XX:-UseJVMCICompile。JVMCIはGraalVMとJVMのあいだのインタフェースです。このフラッグによりJVMCIが使用されず、従来のJITコンパイラーが使用されます。
+
+  >```sh
+  >time java -XX:-UseJVMCICompiler TopTen large.txt
+  >```
+
+実行結果と実行時間を確認します。
+
+```
+sed = 502500
+ut = 392500
+in = 377500
+et = 352500
+id = 317500
+eu = 317500
+eget = 302500
+vel = 300000
+a = 287500
+sit = 282500
+
+real    0m48.901s
+user    0m49.219s
+sys     0m2.172s
+
+```  
+以上の結果から、GraalVMのJITコンパイラーの実行時間は従来のコンパイラーに比べて約30%短縮したことが分かります。  
 <br/>
 <br/>
 
-# 演習 3: Native Imageの生成と実行(coming soon)
 
+# 演習 3: Native Imageの生成と実行
+この演習の中に、GraalVMの中のAhead-of-Time(AOT)機能を利用して軽量で高速起動のNaitve Imageを作成します。  
+
+JITコンパイラーはロングラン・アプリやピーク時高いスループットが要求されるアプリに強さを発揮できる一方、スタートアップ時間がかかることと、比較的に多くなメモリーを消費するデメリットがあります。以下の例は、ファイルサイズの小さい（１KB)ファイルに対してTopTenクラスを実行した場合、起動時間と消費メモリーを測定した結果です。　　
+
+(1)graalvm-ten-thingsディレクトリーに移動します。
+
+  >```sh
+  >cd graalvm-ten-things
+  >```
+
+(2)以下のコマンドを実行し、small.txtファイルを作成します。
+
+  >```sh
+  >make small.txt
+  >```
+(3)small.txtファイルが作成されたことをlsコマンドで確認します。サイズが1KBであることを確認してください。
+
+![Download Picture 10](images/GraalVMinstall10.JPG)
+
+(4)以下のコマンドを実行し、small.txtの単語を集計するプログラムTopTenを実行します。
+
+  >```sh
+  >/usr/bin/time -v java TopTen small.txt
+  >```
+出力結果を確認し、実行時間とメモリーを確認します。
+```
+sed = 6
+sit = 6
+amet = 6
+mauris = 3
+volutpat = 3
+vitae = 3
+dolor = 3
+libero = 3
+tempor = 2
+suscipit = 2
+        Command being timed: "java TopTen small.txt"
+        User time (seconds): 0.71
+        System time (seconds): 0.39
+        Percent of CPU this job got: 135%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.82
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 53976
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 15495
+        Voluntary context switches: 0
+        Involuntary context switches: 0
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 0
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+```  
+
+(5)GraalVMが提供しているツールを使用して実行可能なNative Imageを作成します。実行ファイルの作成に少し時間がかかります。
+
+  >```sh
+  >native-image --no-server --no-fallback TopTen
+  >```
+出力結果を確認します。
+```
+linuser@JUNSUZU-JP:~/handson/graalvm-ten-things$ native-image --no-server --no-fallback TopTen
+[topten:166]    classlist:   5,361.17 ms,  1.13 GB
+[topten:166]        (cap):  15,043.95 ms,  1.58 GB
+[topten:166]        setup:  21,198.24 ms,  1.58 GB
+[topten:166]     (clinit):     376.17 ms,  1.76 GB
+[topten:166]   (typeflow):   9,617.27 ms,  1.76 GB
+[topten:166]    (objects):   7,946.82 ms,  1.76 GB
+[topten:166]   (features):     892.17 ms,  1.76 GB
+[topten:166]     analysis:  20,176.83 ms,  1.76 GB
+[topten:166]     universe:     752.08 ms,  1.76 GB
+[topten:166]      (parse):   1,989.35 ms,  1.76 GB
+[topten:166]     (inline):   2,549.77 ms,  1.76 GB
+[topten:166]    (compile):  32,064.48 ms,  2.89 GB
+[topten:166]      compile:  38,520.67 ms,  2.89 GB
+[topten:166]        image:   2,367.76 ms,  2.89 GB
+[topten:166]        write:   1,849.13 ms,  2.89 GB
+[topten:166]      [total]:  90,988.07 ms,  2.89 GB
+```  
+これにより、軽量な実行ファイル"topten"が作成されたことを確認します。
+
+![Download Picture 11](images/GraalVMinstall11.JPG)
+
+以下のコマンドでtoptenのサイズを確認できます。
+
+  >```sh
+  >du -h topten
+  >```
+
+(6)以下のコマンドで、実行ファイルtoptenを実行します。引数にsmall.txtを設定します。
+
+  >```sh
+  >/usr/bin/time -v ./topten small.txt
+  >```
+出力結果を確認し、実行時間とメモリーを確認します。
+```
+sed = 6
+sit = 6
+amet = 6
+mauris = 3
+volutpat = 3
+vitae = 3
+dolor = 3
+libero = 3
+tempor = 2
+suscipit = 2
+        Command being timed: "./topten small.txt"
+        User time (seconds): 0.01
+        System time (seconds): 0.23
+        Percent of CPU this job got: 70%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.35
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 4968
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 1324
+        Voluntary context switches: 0
+        Involuntary context switches: 0
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 0
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+```  
+この結果は上記(4)と比較して、実行時間とメモリーはそれぞれ以下のようになります。
+|  |JIT実行  |AOT実行  |
+|---|---|---|
+|実行時間  |0.71秒  |0.01秒  |
+|メモリー  |53976kb  |4968kb  |
   
 <br/>
 <br/>
+  
 
-# 演習 4: Polyglotプログラミングと実行(coming soon)
+# 演習 4: Polyglotプログラミングと実行
+GraalVM内部ではTruffleというフレームワークを使用してJava以外のプログラミング言語をGraalVMのJITコンパイラー上で動かすことができます。以下の演習では、一本のJavaScriptプログラム（polyglot.js)の中にGraalVMのpolyglot APIを使用し、JavaとRの両方を呼び出します。大きい整数の扱いがより効率的であるJavaのBigIntegerクラスを利用しながら、描画が得意とするRで3Dグラフを作成します。  
 
+(1)まずNode.jsで利用できるWebアプリケーションフレームワークExpressをインストールします。以下のコマンドを実行します。
+
+  >```sh
+  >$GRAALVM_HOME/bin/npm install express
+  >```
+
+
+(2)polyglot.jsの中身を確認します。このプログラムの中にJavaとRの両方を呼び出しています。
+```js
+const express = require('express')
+const app = express()
+
+const BigInteger = Java.type('java.math.BigInteger')
+
+app.get('/', function (req, res) {
+  var text = 'Hello World from Graal.js!<br> '
+
+  // Using Java standard library classes
+  text += BigInteger.valueOf(10).pow(100)
+          .add(BigInteger.valueOf(43)).toString() + '<br>'
+
+  // Using R interoperability to create graphs
+  text += Polyglot.eval('R',
+    `svg();
+     require(lattice);
+     x <- 1:100
+     y <- sin(x/10)
+     z <- cos(x^1.3/(runif(1)*5+10))
+     print(cloud(x~y*z, main="cloud plot"))
+     grDevices:::svg.off()
+    `);
+
+  res.send(text)
+})
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+})
+```
+
+
+(3)polyglot.jsを実行します。
+>```sh
+>$GRAALVM_HOME/bin/node --jvm --polyglot polyglot.js
+>```
+
+実行結果を確認するため、http://localhost:3000/ をブラウザでオープンして確認します。
+![Download Picture 12](images/GraalVMinstall12.JPG)
+
+<br/>
