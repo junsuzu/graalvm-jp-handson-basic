@@ -9,7 +9,7 @@
 
 このハンズオン演習の対象はJava基礎知識を有することは望ましいが、必須ではありません。  
 
-※この内容はOracle主催のOracle GraalVM Enterprise Virtual Hands-On Lab(https://go.oracle.com/LP=102573?elqCampaignId=276236)の演習部分にあたります。  
+※この内容はOracle主催のOracle GraalVM Enterprise Virtual Hands-On Labの演習部分にあたります。  
 参加者はこちらの内容に沿って事前環境セットアップおよび当日演習を実施して頂けます。また単独でGraalVMの入門演習としてもご利用頂けます。  
 <br/>
 
