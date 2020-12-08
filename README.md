@@ -1,15 +1,16 @@
 # Oracle GraalVM Enterprise ハンズオン演習 (Basic編)
 
 ## ＜目的と対象＞：
-このハンズオン演習は、次世代Polyglot(多言語対応）ランタイム環境であるOracle GraalVM Enterprise版の導入、操作手順を演習形式で学ぶためのガイドです。この演習を通じて以下の項目をマスターすることを目的としています。  
+このハンズオン演習は、次世代Polyglot(多言語プログラミング）対応実行環境であるOracle GraalVM Enterprise版の導入、操作手順を演習形式で学ぶためのガイドです。この演習を通して以下の項目をマスターすることを目的としています。  
 * GraalVMをPC環境への導入
-* 新しいJITコンパイラー上でJavaクラスの実行
-* 新しいAOTコンパイラー上でNative Imageの生成と実行
-* Polyglot（多言語）プログラミングと実行  
+* GraalVM JITコンパイラでJavaクラスを実行
+* GraalVM AOTコンパイラでNative Imageの生成と実行
+* Polyglot 多言語プログラミングと実行  
 
 このハンズオン演習の対象はJava基礎知識を有することは望ましいが、必須ではありません。  
 
-※この内容はOracle主催の「Oracle GraalVM Enterprise Virtual Hands-On Lab」の演習部分にあたります。参加者はこちらの内容に沿って事前環境セットアップおよび当日演習を実施して頂けます。また単独でGraalVMの入門演習としてもご利用頂けます。  
+※この内容はOracle主催のOracle GraalVM Enterprise Virtual Hands-On Lab(https://go.oracle.com/LP=102573?elqCampaignId=276236)の演習部分にあたります。  
+参加者はこちらの内容に沿って事前環境セットアップおよび当日演習を実施して頂けます。また単独でGraalVMの入門演習としてもご利用頂けます。  
 <br/>
 
 ## ＜前提環境／事前準備＞
@@ -29,7 +30,7 @@
    * [1.3: Native Imageのインストール](#13-Native-Imageのインストール)
    * [1.4: LLVMとR言語プラグインのインストール](#14-LLVMとR言語プラグインのインストール)
 
-* **[演習 2: High-performance JIT コンパイラー](#演習-2-High-performance-JIT-コンパイラー)**
+* **[演習 2: High-performance JIT コンパイラ](#演習-2-High-performance-JIT-コンパイラ)**
 * **[演習 3: Native Imageの生成と実行](#演習-3-Native-Imageの生成と実行)**
 * **[演習 4: Polyglotプログラミングと実行](#演習-4-Polyglotプログラミングと実行)**
 <br/>
@@ -164,7 +165,7 @@ zshの場合
 Native Imageの生成と実行は、以下３つのライブラリーが必要です。  
 * glibc-devel: Cライブラリーの使用に必要なヘッダーとオブジェクトファイル
 * zlib-devel: zip や gzip ライブラリーの使用に必要なヘッダーファイル
-* gcc: C/C++など複数言語のコンパイラー集  
+* gcc: C/C++など複数言語のコンパイラ集  
 
 OSによりインストール・コマンドは異なります：  
 
@@ -242,7 +243,7 @@ MacOS
 <br/>
 <br/>
 
-# 演習 2: High-performance JIT コンパイラー
+# 演習 2: High-performance JIT コンパイラ
 以下の演習は「Top 10 Things To Do With GraalVM」 の内容を使用します。  
 https://medium.com/graalvm/graalvm-ten-things-12d9111f307d
 
@@ -307,13 +308,13 @@ public class TopTen {
 }
 ```
 
-(6)TopTen.javaをコンパイルします。デフォルトではクラスパスが通るGraalVMのJITコンパイラーが有効になります。
+(6)TopTen.javaをコンパイルします。デフォルトではクラスパスが通るGraalVMのJITコンパイラが有効になります。
 
   >```sh
   >javac TopTen.java
   >```
 
-(7)GraalVMのJITコンパイラーはJavaで書かれています。以下の最適化によりJITコンパイラーの実行速度が従来C++で書かれていたコンパイラーよりも速くなります。  
+(7)GraalVMのJITコンパイラはJavaで書かれています。以下の最適化によりJITコンパイラの実行速度が従来C++で書かれていたコンパイラよりも速くなります。  
 * Partial Escape Analysis  
 * In-lining  
 * Path Duplication
@@ -342,7 +343,7 @@ real    0m32.699s
 user    0m34.078s
 sys     0m3.406s  
 ```  
-(8)従来のJITコンパイラーと比較するため、以下のJavaコマンドでフラッグを立てます：-XX:-UseJVMCICompile。JVMCIはGraalVMとJVMのあいだのインタフェースです。このフラッグによりJVMCIが使用されず、従来のJITコンパイラーが使用されます。
+(8)従来のJITコンパイラと比較するため、以下のJavaコマンドでフラッグを立てます：-XX:-UseJVMCICompile。JVMCIはGraalVMとJVMのあいだのインタフェースです。このフラッグによりJVMCIが使用されず、従来のJITコンパイラが使用されます。
 
   >```sh
   >time java -XX:-UseJVMCICompiler TopTen large.txt
@@ -367,7 +368,7 @@ user    0m49.219s
 sys     0m2.172s
 
 ```  
-以上の結果から、GraalVMのJITコンパイラーの実行時間は従来のコンパイラーに比べて約30%短縮したことが分かります。  
+以上の結果から、GraalVMのJITコンパイラの実行時間は従来のコンパイラに比べて約30%短縮したことが分かります。  
 <br/>
 <br/>
 
@@ -375,7 +376,7 @@ sys     0m2.172s
 # 演習 3: Native Imageの生成と実行
 この演習の中に、GraalVMの中のAhead-of-Time(AOT)機能を利用して軽量で高速起動のNaitve Imageを作成します。  
 
-JITコンパイラーはロングラン・アプリやピーク時高いスループットが要求されるアプリに強さを発揮できる一方、スタートアップ時間がかかることと、比較的に多くなメモリーを消費するデメリットがあります。以下の例は、ファイルサイズの小さい（１KB)ファイルに対してTopTenクラスを実行した場合、起動時間と消費メモリーを測定した結果です。　　
+JITコンパイラはロングラン・アプリやピーク時高いスループットが要求されるアプリに強さを発揮できる一方、スタートアップ時間がかかることと、比較的に多くなメモリーを消費するデメリットがあります。以下の例は、ファイルサイズの小さい（１KB)ファイルに対してTopTenクラスを実行した場合、起動時間と消費メモリーを測定した結果です。　　
 
 (1)graalvm-ten-thingsディレクトリーに移動します。
 
@@ -521,7 +522,7 @@ suscipit = 2
   
 
 # 演習 4: Polyglotプログラミングと実行
-GraalVM内部ではTruffleというフレームワークを使用してJava以外のプログラミング言語をGraalVMのJITコンパイラー上で動かすことができます。以下の演習では、一本のJavaScriptプログラム（polyglot.js)の中にGraalVMのpolyglot APIを使用し、JavaとRの両方を呼び出します。大きい整数の扱いがより効率的であるJavaのBigIntegerクラスを利用しながら、描画が得意とするRで3Dグラフを作成します。  
+GraalVM内部ではTruffleというフレームワークを使用してJava以外のプログラミング言語をGraalVMのJITコンパイラ上で動かすことができます。以下の演習では、一本のJavaScriptプログラム（polyglot.js)の中にGraalVMのpolyglot APIを使用し、JavaとRの両方を呼び出します。大きい整数の扱いがより効率的であるJavaのBigIntegerクラスを利用しながら、描画が得意とするRで3Dグラフを作成します。  
 
 (1)まずNode.jsで利用できるWebアプリケーションフレームワークExpressをインストールします。以下のコマンドを実行します。
 
@@ -573,3 +574,13 @@ app.listen(3000, function () {
 ![Download Picture 12](images/GraalVMinstall12.JPG)
 
 <br/>
+<br/>
+お疲れ様でした！
+<br/>
+ここまでは、Oracle GraalVM Enterprise ハンズオン演習 (Basic編)の内容はすべて終了しました。この演習では以下の項目について学びました。
+ 
+* GraalVMの導入
+* GraalVM JITコンパイラでJavaクラスを実行
+* GraalVM AOTコンパイラでNative Imageの生成と実行
+* Polyglot 多言語プログラミングと実行 
+
