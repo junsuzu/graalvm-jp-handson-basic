@@ -25,7 +25,7 @@
 ## ＜演習内容＞
 
 * **[演習 1: GraalVM Enterpriseのインストール](#演習-1-GraalVM-Enterprise-Editionのインストール)**
-   * [1.1: GraalVM EE20.1.0のダウンロード](#11-GraalVM-EE2010のダウンロード)
+   * [1.1: GraalVM EE21.0.0のダウンロード](#11-GraalVM-EE2010のダウンロード)
    * [1.2: GraalVM Coreパッケージのインストール](#12-GraalVM-Coreパッケージのインストール)
    * [1.3: Native Imageのインストール](#13-Native-Imageのインストール)
    * [1.4: LLVMとR言語プラグインのインストール](#14-LLVMとR言語プラグインのインストール)
@@ -39,22 +39,17 @@
 
 # 演習 1: GraalVM Enterprise Editionのインストール
 
-以下はGraalVM Enterprise Edition 20.1.0 for JDK 8をインストール手順となります。
+以下はGraalVM Enterprise Edition 21.0.0 for JDK 11をインストール手順となります。
 
-# 1.1: GraalVM EE20.1.0のダウンロード
-(1) [OTN - Oracle Technology Network](https://www.oracle.com/downloads/graalvm-downloads.html)　からGraalVM Enterprise Editionをダウンロードします。下図のように"GraalVM Enterprise Edition 20 Current Release" タブを選択します。
+# 1.1: GraalVM EE21.0.0のダウンロード
+(1) [OTN - Oracle Technology Network](https://www.oracle.com/downloads/graalvm-downloads.html)　からGraalVM Enterprise Editionをダウンロードします。下図のように"GraalVM Enterprise Edition 21 Current Release" タブを選択し、“Release Version 21.0.0, Java Version 11, Linux”を選択します。
 
   ![Download Picture 1](images/GraalVMinstall01.JPG) 
 
 <br/>
 
-(2)“Release Version 20.1.0, Java Version 8, Linux”を選択します。 MacOSを使用している場合macOSを選択してください。現時点でWindows版ではLinuxとMacOSに比べてGraalVMのフィーチャーが少ないので、この演習ではWindows版を選択しません。
 
-  ![Download Picture 2](images/GraalVMinstall02.JPG)
-
-<br/>
-
-(3)OSを選択後、以下のコンポーネントをダウンロードします。必須コンポーネントはこの演習に必要です。その他のオプショナルコンポーネントは演習では使いませんが、今後GraalVMの多くの機能を試したい場合はダウンロードしておいてください。
+(2)以下のコンポーネントをダウンロードします。必須コンポーネントはこの演習に必要です。その他のオプショナルコンポーネントは演習では使いませんが、今後GraalVMの多くの機能を試したい場合はダウンロードしておいてください。
 *	Oracle GraalVM Enterprise Edition Core（必須）
 *	Oracle GraalVM Enterprise Edition Native Image（必須）
 * Ideal Graph Visualizer（オプショナル）
@@ -65,7 +60,6 @@
 * GraalVM R Language Plugin (必須）   
 ※R Pluginは直接ダウンロードできず、GraalVMのインストール・ユーティリティー(guコマンド)を使用してインストールします。)
 
-  ![Download Picture 3](images/GraalVMinstall03.JPG)
 
 上記コンポーネントをダウンロードするためには、OTNにログインする必要があります。OTNアカウントをお持ちでない方は以下のログイン画面から作成してください。
 
@@ -75,15 +69,14 @@
 <br/>
 
 コンポーネントをダウンロードした後、Linuxファイルシステム上に下記のようなモジュール一覧が表示されます：
-* graalvm-ee-java8-linux-amd64-20.1.0.tar.gz(必須)
-* idealgraphvisualizer-20.1.0-all.zip
-* llvm-toolchain-installable-java8-linux-amd64-20.1.0.jar（必須）
-*  native-image-installable-svm-svmee-java8-linux-amd64-20.1.0.jar(必須)
-*  python-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
-*  namedruby-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
-* wasm-installable-svm-svmee-java8-linux-amd64-20.1.0.jar
+* graalvm-ee-java11-linux-amd64-21.0.0.tar.gz(必須)
+* idealgraphvisualizer-21.0.0-all.zip
+* llvm-toolchain-installable-java11-linux-amd64-21.0.0.jar（必須）
+*  native-image-installable-svm-svmee-java11-linux-amd64-21.0.0.jar(必須)
+*  python-installable-svm-svmee-java11-linux-amd64-21.0.0.jar
+*  namedruby-installable-svm-svmee-java11-linux-amd64-21.0.0.jar
+* wasm-installable-svm-svmee-java11-linux-amd64-21.0.0.jar
 
- ![Download Picture 5](images/GraalVMinstall05.JPG)
 
 <br/>
 
@@ -91,21 +84,20 @@
 
 (1)各モジュールをダウンロードした後、ダウンロード先のディレクトリーにて以下のコマンドを実行し、Coreパッケージを解凍します。
   >```sh
-  >tar -zxf graalvm-ee-java8-linux-amd64-20.1.0.tar.gz
+  >tar -zxf graalvm-ee-java11-linux-amd64-21.0.0.tar.gz
   >```
 <br/>
-上記コマンドの実行により”graalvm-ee-java8-20.1.0”というフォルダーが作成されます。
-    
-![Download Picture 6](images/GraalVMinstall06.JPG)
 
+上記コマンドの実行により”graalvm-ee-java11-21.0.0”というフォルダーが作成されます。
 <br/>
+
 フォルダーを任意のディレクトリーに移動します。そのディレクトリー配下がGraalVMのインストール先(Java Home)となります。下記の例ではフォルダーを/optの配下に移動する例です：
 
   >```sh
-  >sudo mv graalvm-ee-java8-20.1.0 /opt/.
+  >sudo mv graalvm-ee-java11-21.0.0 /opt/.
   >```
 
-これにより、GraalVMのインストール・ディレクトリー（Java Home)は/opt/graalvm-ee-java8-20.1.0になります。
+これにより、GraalVMのインストール・ディレクトリー（Java Home)は/opt/graalvm-ee-java11-21.0.0になります。
 
 <br/>
 
@@ -123,7 +115,7 @@ zshの場合
 
 以下の行を ~/.zshrc もしくは ~/.bashrc に追加します。
   >```sh
-  >export GRAALVM_HOME=/opt/graalvm-ee-java8-20.1.0
+  >export GRAALVM_HOME=/opt/graalvm-ee-java11-21.0.0
   >export PATH=$GRAALVM_HOME/bin:$PATH
   >export JAVA_HOME=$GRAALVM_HOME
   >```
@@ -145,11 +137,11 @@ zshの場合
   >```
 
 <br/>
-以下の出力結果を確認できれば、GraalVM 20.1.0 for Java8が正常にインストールされたことになります。
+以下の出力結果を確認できれば、GraalVM 21.0.0 for Java11が正常にインストールされたことになります。
 
   >```sh
   >Java(TM) SE Runtime Environment (build 1.8.0_251-b08)
-  >Java HotSpot(TM) 64-Bit Server VM GraalVM EE 20.1.0 (build 25.251-b08-jvmci-20.1-b02, mixed mode)
+  >Java HotSpot(TM) 64-Bit Server VM GraalVM EE 21.0.0 (build 25.251-b08-jvmci-20.1-b02, mixed mode)
   >```
 <br/>
 
@@ -157,7 +149,7 @@ zshの場合
 
 (1)　Native ImageをインストールするのにGraalVM Utility(gu)を使用します。モジュールのダウンロード先にて下記コマンドを実行します。
   >```sh
-  >gu install -L native-image-installable-svm-svmee-java8-darwin-amd64-20.1.0.jar
+  >gu install -L native-image-installable-svm-svmee-java11-darwin-amd64-21.0.0.jar
   >```
 
 (2) Native Image依存ライブラリーのインストール
@@ -193,7 +185,7 @@ MacOS
 (1)LLVM-toolchainプラグインのインストール  
 以下のコマンドを実行し、必要なモジュールを自動的にgithubよりダウンロードされます。
   >```sh
-  >gu install llvm-toolchain
+  >gu -L install llvm-toolchain-installable-java11-linux-amd64-21.0.0.jar
   >```
 (2)R言語プラグインのインストール  
 以下のコマンドを実行し、必要なモジュールを自動的にgithubよりダウンロードされます。
@@ -205,7 +197,7 @@ MacOS
 
 以下のコマンドでR言語ソースのコンフィグ作業を実施します。
   >```sh
-  >/opt/graalvm-ee-java8-20.1.0/jre/languages/R/bin/configure_fastr
+  >/opt/graalvm-ee-java11-21.0.0/jre/languages/R/bin/configure_fastr
   >```
 
 以下の出力結果を確認します。
@@ -218,8 +210,8 @@ MacOS
     On Debian based systems: apt-get install build-essential gfortran libxml2 libc++-dev
     On Oracle Linux: yum groupinstall 'Development Tools' && yum install gcc-gfortran
 
-    Default personal library directory (/home/mluther/R/x86_64-pc-linux-gnu-library/fastr-20.1.0-3.6) does exist. Do you wish to create it? (Yy/Nn) y
-    Creating personal library directory: /home/mluther/R/x86_64-pc-linux-gnu-library/fastr-20.1.0-3.6
+    Default personal library directory (/home/mluther/R/x86_64-pc-linux-gnu-library/fastr-21.0.0-3.6) does exist. Do you wish to create it? (Yy/Nn) y
+    Creating personal library directory: /home/mluther/R/x86_64-pc-linux-gnu-library/fastr-21.0.0-3.6
     DONE
 
 <br/>
@@ -236,7 +228,7 @@ MacOS
 <br/>
 お疲れ様でした！以上でインストール作業はすべて完了しました。演習１では以下のタスクを実施しました。
 
-1.	GraalVM EE20.1.0 for Java8のCoreパッケージのインストールおよびクラスパスの設定
+1.	GraalVM EE21.0.0 for Java11のCoreパッケージのインストールおよびクラスパスの設定
 2. Native Imageおよび依存ライブラリーのインストール
 3. LLVMとR言語のインストール
 
