@@ -25,7 +25,7 @@
 ## ＜演習内容＞
 
 * **[演習 1: GraalVM Enterpriseのインストール](#演習-1-GraalVM-Enterprise-Editionのインストール)**
-   * [1.1: GraalVM EE21.0.0のダウンロード](#11-GraalVM-EE2010のダウンロード)
+   * [1.1: GraalVM EE21.0.0のダウンロード](#11-GraalVM-EE2100のダウンロード)
    * [1.2: GraalVM Coreパッケージのインストール](#12-GraalVM-Coreパッケージのインストール)
    * [1.3: Native Imageのインストール](#13-Native-Imageのインストール)
    * [1.4: LLVMとR言語プラグインのインストール](#14-LLVMとR言語プラグインのインストール)
