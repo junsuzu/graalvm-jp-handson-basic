@@ -39,7 +39,7 @@
 
 # 演習 1: GraalVM Enterprise Editionのインストール
 
-以下はGraalVM Enterprise Edition 21.0.0 for JDK 11をインストール手順となります。
+以下はGraalVM Enterprise Edition 21.0.0 for JDK 11をインストールする手順となります。
 
 # 1.1: GraalVM EE21.0.0のダウンロード
 (1) [OTN - Oracle Technology Network](https://www.oracle.com/downloads/graalvm-downloads.html)　からGraalVM Enterprise Editionをダウンロードします。下図のように"GraalVM Enterprise Edition 21 Current Release" タブを選択し、“Release Version 21.0.0, Java Version 11, Linux”を選択します。
