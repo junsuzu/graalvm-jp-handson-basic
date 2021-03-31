@@ -149,7 +149,7 @@ zshの場合
 
 (1)　Native ImageをインストールするのにGraalVM Utility(gu)を使用します。モジュールのダウンロード先にて下記コマンドを実行します。
   >```sh
-  >gu install -L native-image-installable-svm-svmee-java11-darwin-amd64-21.0.0.jar
+  >gu install -L native-image-installable-svm-svmee-java11-linux-amd64-21.0.0.jar
   >```
 
 (2) Native Image依存ライブラリーのインストール
